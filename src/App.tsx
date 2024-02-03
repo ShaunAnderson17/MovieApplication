@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AdvancedSearch from './pages/advancedsearch';
+import Browse from './pages/Browse';
+import NewReleases from './pages/newreleases';
+import { Route, Routes } from "react-router-dom"
+import SearchBar from './ui-components/searchbar';
+import Navbar from './ui-components/navbar';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <>
+            < Navbar />
+            <div className="container">
+                <SearchBar />
+                <Routes>
+                    <Route path="/Browse" element={<Browse />} />
+                    <Route path="/NewReleases" element={<NewReleases />} />
+                    <Route path="/AdvancedSearch" element={<AdvancedSearch />} />
+                </Routes>
+            </div>
+        </>
+    )
+
 }
 
 export default App;

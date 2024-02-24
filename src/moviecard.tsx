@@ -6,22 +6,27 @@ export interface MovieData {
     poster_path: string;
     overview: string;
     release_date: string;
+    vote_average: string;
+    runtime: string;
+    genres: string[];  
     mpaaRating?: string;
-    runtime?: string;
     director?: string;
     writer?: string;
     actors?: string;
-    genre?: string;
 }
 
 async function MovieCard(movieId: string): Promise<MovieData> {
     try {
-        const [tmdbResponse, omdbResponse] = await Promise.all([
-            TMDB_API.get(`/movie/${movieId}`),
-            OMDB_API.get(`/?t=${movieId}`)
-        ]);
-
+        const tmdbResponse = await TMDB_API.get(`/movie/${movieId}`);
         const tmdbData = tmdbResponse.data;
+
+        const omdbResponse = await OMDB_API.get('/', {
+            params: {
+                t: tmdbData.title,
+                plot: 'short',
+                r: 'json',
+            },
+        });
         const omdbData = omdbResponse.data;
 
         console.log('TMDB Response:', tmdbData);
@@ -33,12 +38,13 @@ async function MovieCard(movieId: string): Promise<MovieData> {
             poster_path: tmdbData.poster_path,
             overview: tmdbData.overview,
             release_date: tmdbData.release_date,
+            vote_average: tmdbData.vote_average,
+            runtime: tmdbData.runtime,
+            genres: tmdbData.genres.map((genre: { name: string }) => genre.name),  
             mpaaRating: omdbData.Rated,
-            runtime: omdbData.Runtime,
             director: omdbData.Director,
             writer: omdbData.Writer,
             actors: omdbData.Actors,
-            genre: omdbData.Genre
         };
 
         return movieData;

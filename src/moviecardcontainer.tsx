@@ -2,13 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MovieCard, { MovieData } from './moviecard';
 
-interface MovieCardContainerProps {
-    movies: MovieData[];
-}
-
-interface RouteParams {
-    movieId: string;
-}
 
 function MovieCardContainer() {
     const [movie, setMovie] = useState<MovieData | null>(null);
@@ -33,10 +26,11 @@ function MovieCardContainer() {
         <div>
             <h1>{movie.title}</h1>
             <p>Summary: {movie.overview}</p>
-            <p> Release Date: {movie.release_date}</p>
+            <p>Release Date: {movie.release_date}</p>
+            <p>Vote Average: {movie.vote_average}</p>
             <p>MPAA Rating: {movie.mpaaRating}</p>
             <p>Runtime: {movie.runtime}</p>
-            <p>Genre: {movie.genre}</p>
+            <p>Genre: {movie.genres ? movie.genres.join(', ') : 'N/A'}</p>
             <p>Director(s): {movie.director}</p>
             <p>Writer(s): {movie.writer}</p>
             <p>Actors: {movie.actors}</p>

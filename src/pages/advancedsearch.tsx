@@ -1,24 +1,41 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { TMDB_API } from '../api'
+import { MovieData } from '../moviecard'
 
 interface CheckboxState {
     [key: string]: boolean;
 }
 
 const genres = [
-    'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
-    'Documentary', 'Drama', 'Family', 'Fantasy', 'Film-Noir', 'History',
-    'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Sport',
-    'Thriller', 'War', 'Western'
+    { id: 28, name: 'Action' },
+    { id: 12, name: 'Adventure' },
+    { id: 16, name: 'Animation' },
+    { id: 35, name: 'Comedy' },
+    { id: 80, name: 'Crime' },
+    { id: 99, name: 'Documentary' },
+    { id: 18, name: 'Drama' },
+    { id: 10751, name: 'Family' },
+    { id: 14, name: 'Fantasy' },
+    { id: 36, name: 'History' },
+    { id: 27, name: 'Horror' },
+    { id: 10402, name: 'Music' },
+    { id: 9648, name: 'Mystery' },
+    { id: 10749, name: 'Romance' },
+    { id: 878, name: 'Sci-Fi' },
+    { id: 10770, name: 'TV Movie' },
+    { id: 53, name: 'Thriller' },
+    { id: 10752, name: 'War' },
+    { id: 37, name: 'Western' },
 ];
 
-const MPAA = ['G', 'R', 'PG', 'NC17', 'PG13', 'Not Rated'];
-const IMDbRating = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+const vote_average = ['1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10'];
 
 function CheckboxGroup({ label, checkboxes, checkboxState, handleChange }: { label: string, checkboxes: string[], checkboxState: CheckboxState, handleChange: (checkboxName: string, group: number) => void }) {
     return (
         <div className="checkbox-container">
             <div className="genre-label">{label}</div>
-            {checkboxes.map((checkboxName) => (
+            {checkboxes && checkboxes.map((checkboxName) => (
                 <div key={checkboxName} className="checkbox-item">
                     <input
                         type="checkbox"
@@ -34,21 +51,138 @@ function CheckboxGroup({ label, checkboxes, checkboxState, handleChange }: { lab
 
 function AdvancedSearch() {
     const [checkboxStateGenre, setCheckboxStateGenre] = useState<CheckboxState>(
-        genres.reduce((acc, genre) => ({ ...acc, [genre]: false }), {})
+        genres.reduce((acc, genre) => ({ ...acc, [genre.name]: false }), {})
     );
 
-    const [checkboxStateMPAA, setCheckboxStateMPAA] = useState<CheckboxState>(
-        MPAA.reduce((acc, genre) => ({ ...acc, [genre]: false }), {})
+    const [checkboxStateVoteAverage, setCheckboxStateVoteAverage] = useState<CheckboxState>(
+        vote_average.reduce((acc, vote_average) => ({ ...acc, [vote_average]: false }), {})
     );
 
-    const [checkboxStateIMDbRating, setCheckboxStateIMDbRating] = useState<CheckboxState>(
-        IMDbRating.reduce((acc, genre) => ({ ...acc, [genre]: false }), {})
-    );
+    const [runtime, setRuntime] = useState<{ min: string; max: string }>({ min: "", max: "" });
 
-    const handleChange = (checkboxName: string, group: number) => {
+    const [releaseYear, setReleaseYear] = useState<string>("");
+
+    const [filteredMovies, setFilteredMovies] = useState<MovieData[] | null>(null);
+
+    const [isFilterApplied, setIsFilterApplied] = useState(false);
+
+    const updateIsFilterApplied = () => { 
+        const genreFilterApplied = Object.values(checkboxStateGenre).some((value) => value);
+        const voteAverageFilterApplied = Object.values(checkboxStateVoteAverage).some((value) => value);
+        const runtimeFilterApplied = runtime.min !== '' || runtime.max !== '';
+        const releaseYearFilterApplied = releaseYear !== '';
+         
+        setIsFilterApplied(genreFilterApplied || voteAverageFilterApplied || runtimeFilterApplied || releaseYearFilterApplied);
+    }; 
+
+    const fetchFilteredMovies = async () => {
+        try {
+            const selectedGenres = Object.keys(checkboxStateGenre).filter(
+                (genre) => checkboxStateGenre[genre]
+            );
+
+            const selectedVoteAverages = Object.keys(checkboxStateVoteAverage).filter(
+                (voteAvg) => checkboxStateVoteAverage[voteAvg]
+            );
+
+            const genreIds = await Promise.all(
+                selectedGenres.map(async (genre) => {
+                    const genreObject = genres.find((g) => g.name === genre);
+                    return genreObject ? genreObject.id : null;
+                })
+            );
+
+            const validGenreIds = genreIds.filter((id) => id !== null);
+
+            const voteAverageRanges = selectedVoteAverages.map((range) => {
+                const [min, max] = range.split('-');
+                return { min, max };
+            });
+
+            const minRuntimeInMinutes = runtime.min ? convertRuntimeToMinutes(runtime.min) : null;
+            const maxRuntimeInMinutes = runtime.max ? convertRuntimeToMinutes(runtime.max) : null;
+             
+            const response = await TMDB_API.get('/discover/movie', {
+                params: {
+                    with_genres: validGenreIds.join(','),
+                    'vote_average.gte': Math.min(...voteAverageRanges.map(range => parseFloat(range.min))),
+                    'vote_average.lte': Math.max(...voteAverageRanges.map(range => parseFloat(range.max))),
+                    'with_runtime.gte': minRuntimeInMinutes,
+                    'with_runtime.lte': maxRuntimeInMinutes,
+                    primary_release_year: releaseYear,
+                },
+            });
+
+            setFilteredMovies(response.data.results);
+        } catch (error) {
+            console.error('Error fetching filtered movies:', error);
+        }
+    };
+
+    const convertRuntimeToMinutes = (runtimeString: string) => {
+        const runtimeArray = runtimeString.split(" ");
+        let totalMinutes = 0;
+
+        runtimeArray.forEach((segment) => {
+            const value = parseInt(segment);
+
+            if (!isNaN(value)) {
+                if (segment.includes("hr")) {
+                    totalMinutes += value * 60;
+                } else if (segment.includes("min")) {
+                    totalMinutes += value;
+                }
+            }
+        });
+
+        return totalMinutes;
+    };
+
+    const fetchMoviesByRuntime = async () => {
+        if (!runtime.min || !runtime.max) {
+            setFilteredMovies([]);
+            return;
+        }
+
+        try {
+            const minRuntimeInMinutes = convertRuntimeToMinutes(runtime.min);
+            const maxRuntimeInMinutes = convertRuntimeToMinutes(runtime.max);
+
+            const response = await TMDB_API.get('/discover/movie', {
+                params: {
+                    'with_runtime.gte': minRuntimeInMinutes,
+                    'with_runtime.lte': maxRuntimeInMinutes,
+                },
+            });
+
+            setFilteredMovies(response.data.results);
+        } catch (error) {
+            console.error('Error fetching movies by runtime:', error);
+        }
+    };
+
+
+    const fetchMoviesByReleaseYear = async () => {
+        try {
+            const response = await TMDB_API.get('/discover/movie', {
+                params: {
+                    primary_release_year: releaseYear,
+                },
+            });
+            setFilteredMovies(response.data.results);
+        } catch (error) {
+            console.error('Error fetching movies by release year:', error);
+        }
+    }
+    useEffect(() => {
+        fetchFilteredMovies();
+        updateIsFilterApplied();
+    }, [checkboxStateGenre, checkboxStateVoteAverage, runtime, releaseYear]);
+
+    const handleChange = (name: string, group: number) => {
         const setStateFunction = (prevState: CheckboxState) => ({
             ...prevState,
-            [checkboxName]: !prevState[checkboxName],
+            [name]: !prevState[name],
         });
 
         switch (group) {
@@ -56,40 +190,72 @@ function AdvancedSearch() {
                 setCheckboxStateGenre((prevState) => setStateFunction(prevState));
                 break;
             case 2:
-                setCheckboxStateMPAA((prevState) => setStateFunction(prevState));
+                setCheckboxStateVoteAverage((prevState) => setStateFunction(prevState));
                 break;
             case 3:
-                setCheckboxStateIMDbRating((prevState) => setStateFunction(prevState));
+                setRuntime((prevRuntime) => ({ ...prevRuntime, min: name }));
+                fetchMoviesByRuntime();
+                break;
+            case 4:
+                setRuntime((prevRuntime) => ({ ...prevRuntime, max: name }));
+                fetchMoviesByRuntime();
+                break;
+            case 5:
+                setReleaseYear(name);
+                fetchMoviesByReleaseYear();
                 break;
             default:
                 break;
         }
+        updateIsFilterApplied();
     };
 
     return (
         <div className="advanced-search-container">
             <div className="scrollable-container">
-                <div className="checkbox-group-container">
-                    <CheckboxGroup label="Genre" checkboxes={genres} checkboxState={checkboxStateGenre} handleChange={handleChange} />
+                <div className="genre">
+                    <CheckboxGroup label="Genre" checkboxes={genres.map(genre => genre.name)} checkboxState={checkboxStateGenre} handleChange={(name) => handleChange(name, 1)} />
                 </div>
             </div>
 
             <div className="scrollable-container">
-                <div className="checkbox-group-container">
-                    <CheckboxGroup label="MPAA" checkboxes={MPAA} checkboxState={checkboxStateMPAA} handleChange={(name) => handleChange(name, 2)} />
+                <div className="average-vote">
+                    <CheckboxGroup label="Average Vote" checkboxes={vote_average} checkboxState={checkboxStateVoteAverage} handleChange={(name) => handleChange(name, 2)} />
                 </div>
             </div>
 
-            <div className="scrollable-container">
-                <div className="checkbox-group-container">
-                    <CheckboxGroup label="IMDb Rating" checkboxes={IMDbRating} checkboxState={checkboxStateIMDbRating} handleChange={(name) => handleChange(name, 3)} />
-                </div>
-            </div>
-
-            <div className="dropdown-container">
+            <div className="runtime-min">
                 <div>
-                    <label htmlFor="Release Year">Select Year:</label>
-                    <select id="Release Year">
+                    <label htmlFor="RuntimeMin">Min Runtime:</label>
+                    <select
+                        id="RuntimeMin" value={runtime.min} onChange={(e) => handleChange(e.target.value, 3)}>
+                        <option value="45">45</option>
+                        <option value="1hr">1hr</option>
+                        <option value="1hr 30min">1hr 30min</option>
+                        <option value="2hr">2hr</option>
+                        <option value="2hr 30min">2hr 30min</option>
+                        <option value="3hr+">3hr+</option>
+                    </select>
+                </div>
+                <div className="runtime-max">
+                    <label htmlFor="RuntimeMax">Max Runtime:</label>
+                    <select
+                        id="RuntimeMax" value={runtime.max} onChange={(e) => handleChange(e.target.value, 4)}>
+                        <option value="45">45</option>
+                        <option value="1hr">1hr</option>
+                        <option value="1hr 30min">1hr 30min</option>
+                        <option value="2hr">2hr</option>
+                        <option value="2hr 30min">2hr 30min</option>
+                        <option value="3hr+">3hr+</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div className="release-year">
+                <div>
+                    <label htmlFor="ReleaseYear">Select Year:</label>
+                    <select id="ReleaseYear" value={releaseYear} onChange={(e) => handleChange(e.target.value, 5)}>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                         <option value="2022">2022</option>
@@ -216,8 +382,34 @@ function AdvancedSearch() {
                         <option value="1901">1901</option>
                         <option value="1900">1900</option>
                     </select>
+
+                    <div className="advanced-search-display">
+                        {isFilterApplied && (
+                            <>
+                                <h2>Filtered Movies</h2>
+                                <div className="movie-list">
+                                    {filteredMovies !== null && filteredMovies.length > 0 ? (
+                                        filteredMovies.map((movie) => (
+                                            <div key={`${movie.id}-${movie.title}`} className="movie-item">
+                                                <Link to={`/movie/${movie.id}`}>
+                                                    <img
+                                                        src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                                                        alt={movie.title}
+                                                    />
+                                                </Link>
+                                                <p>{movie.title}</p>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No movies found.</p>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
                 </div>
-                 
+
             </div>
         </div>
     );

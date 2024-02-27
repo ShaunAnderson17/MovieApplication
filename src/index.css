@@ -11,31 +11,34 @@ body {
 .container {
     margin: 1rem;
     text-align: center;
-}
-
-.MovieTitle {
-    font-size: 2rem;
-    font-style: oblique;
-}
+} 
 
 .Browse {
     font-size: 2rem;
     font-style: italic;
+    flex: 1;
+    text-align: center; 
 }
 
 .AdvancedSearch {
     font-size: 2rem;
     font-style: italic;
+    flex: 1;
+    text-align: center; 
 }
 
 .PopularMovies {
     font-size: 2rem;
     font-style: italic;
+    flex: 1;
+    text-align: center; 
 }
 
 .NewReleases {
     font-size: 2rem;
     font-style: italic;
+    flex: 1;
+    text-align: center; 
 }
 
 .nav {
@@ -45,37 +48,42 @@ body {
     justify-content: space-between;
     align-items: stretch;
     gap: 2rem;
-    padding: 0 1rem;
+    padding: 1rem;
     display: flex;
     gap: 1rem;
+    position: relative; 
+}
+  
+.nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 25rem;
 }
 
-    .nav ul {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        display: flex;
-        gap: 25rem;
-    }
+.nav a {
+    color: inherit;
+    text-decoration: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: .25rem;
+}
 
-    .nav a {
-        color: inherit;
-        text-decoration: none;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        padding: .25rem;
-    }
+.nav li.active {
+    box-shadow: 0px 6px 15px rgba(255, 30, 30, .5);
+    border: 1px rgba(121, 0, 59, .6) solid;
+    color: rgba(255,50,50,1);
+    background-color: #45022d;
+}
 
-    .nav li.active {
-        background-color: #45022d;
-    }
-
-
-    .nav li:hover {
-        background-color: #8b0040;
-    }
-
+.nav li:hover {
+    box-shadow: 0px 6px 15px rgba(255, 0, 150, .7);
+    border: 1px rgba(255,255,255,.3) solid;
+    color: rgba(255,255,255,0.8);
+    background-color: #8b0040;
+}
 
 .search-wrapper {
     display: flex;
@@ -133,10 +141,164 @@ input {
     gap: 3rem;
 }
 
-.dropdown-container {
-    position: absolute;
-    gap: 1rem;
-    margin-top: 25rem;  
-    padding-left: 19rem;
-    font-size: larger;
+.release-year {
+    position: absolute; 
+    margin-top: 19rem; 
+    font-size: larger;  
 }
+
+.runtime-min {
+    position: absolute;
+    margin-top: 8rem;
+    font-size: larger;
+    padding-left: 3rem;
+}
+
+.runtime-max {
+    position: absolute;
+    margin-top: 12rem;
+    font-size: larger;
+    padding-left: 3rem;
+}
+
+.advanced-search-display {
+    padding-bottom: 3rem;
+    padding-left: 32rem;
+
+}
+
+.button-container{
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5rem; 
+}
+
+.button-container button {
+    font-size: 25px;
+    padding: 15px; 
+}
+
+li {
+    text-align: center;
+    list-style-type: none;
+}
+
+.popular-movies {
+    text-align: center;
+}
+
+.popular-movies ul {
+    list-style: none;
+    padding: 2rem;
+    margin: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.new-releases ul {
+    list-style: none;
+    padding: 2rem;
+    margin: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.browse ul {
+    list-style: none;
+    padding: 2rem;
+    margin: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; 
+    font-size: medium;
+}
+
+.browse h3{
+    max-width: 200px;
+}
+
+.search-results ul {
+    list-style: none;
+    padding: 2rem;
+    margin: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+ 
+h2 {
+    text-align: center;  
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem;
+}
+ 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+ 
+h3 {
+    margin: 0;  
+    font-size: 1.2rem;  
+}                       
+ 
+p {
+    margin: .7rem;  
+}
+
+.movie-votes{
+    margin-right: 2.2rem;
+    text-align: right;
+}
+
+.movie-title{
+    font-size: 2rem; 
+    margin-top: 1rem;
+    text-align: left;  
+    margin-left: 1rem;
+}
+
+.movie-info {
+    text-align: left;
+    margin-left: 1rem;
+}
+
+.movie-poster{
+    float: left;
+}
+
+.movie-genre{
+    text-align: center;
+}
+
+.movie-summary{
+    font-size: 1.7rem;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+    margin-left: 40rem;
+}
+
+.movie-directors{
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.movie-writers {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.movie-actors {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+} 

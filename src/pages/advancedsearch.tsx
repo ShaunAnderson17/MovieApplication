@@ -224,11 +224,12 @@ function AdvancedSearch() {
                 </div>
             </div>
 
-            <div className="runtime-min">
-                <div>
+            <div className="drop-down-container"> 
+                <div className="runtime-min">
                     <label htmlFor="RuntimeMin">Min Runtime:</label>
                     <select
                         id="RuntimeMin" value={runtime.min} onChange={(e) => handleChange(e.target.value, 3)}>
+                        <option value="">Select Minimum Runtime</option>
                         <option value="45">45</option>
                         <option value="1hr">1hr</option>
                         <option value="1hr 30min">1hr 30min</option>
@@ -241,6 +242,7 @@ function AdvancedSearch() {
                     <label htmlFor="RuntimeMax">Max Runtime:</label>
                     <select
                         id="RuntimeMax" value={runtime.max} onChange={(e) => handleChange(e.target.value, 4)}>
+                        <option value="">Select Maximum Runtime</option>
                         <option value="45">45</option>
                         <option value="1hr">1hr</option>
                         <option value="1hr 30min">1hr 30min</option>
@@ -248,14 +250,17 @@ function AdvancedSearch() {
                         <option value="2hr 30min">2hr 30min</option>
                         <option value="3hr+">3hr+</option>
                     </select>
-                </div>
-            </div>
+                    </div> 
+             
 
 
-            <div className="release-year">
-                <div>
+            <div>
+                <div> 
+                    <div className="release-year">
                     <label htmlFor="ReleaseYear">Select Year:</label>
-                    <select id="ReleaseYear" value={releaseYear} onChange={(e) => handleChange(e.target.value, 5)}>
+                     
+                        <select id="ReleaseYear" value={releaseYear} onChange={(e) => handleChange(e.target.value, 5)}>
+                        <option value=""> Select Release Year</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                         <option value="2022">2022</option>
@@ -382,7 +387,8 @@ function AdvancedSearch() {
                         <option value="1901">1901</option>
                         <option value="1900">1900</option>
                     </select>
-
+                        </div> 
+                    </div>
                     <div className="advanced-search-display">
                         {isFilterApplied && (
                             <>

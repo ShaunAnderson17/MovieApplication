@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TMDB_API, OMDB_API } from '../api';
 import { Link } from 'react-router-dom';
 
@@ -44,7 +44,7 @@ export default function Browse() {
     };
 
     return (
-        <div>
+        <div className="browse">
             <div className="button-container">
                 <button onClick={() => handleButtonClick("28")}>Action</button>
                 <button onClick={() => handleButtonClick("12")}>Adventure</button>
@@ -69,17 +69,17 @@ export default function Browse() {
             {movies.length > 0 && (
                 <ul>
                     {movies.map((movieItem: MovieData) => (
-                        <li key={movieItem.id}>
-                            <h3>{movieItem.title}</h3>
-                            <p>Release Date: {movieItem.release_date}</p>
-                            <p>MPAA Rating: {movieItem.mpaaRating}</p>
-                            <p>Runtime: {movieItem.runtime}</p>
+                        <li key={movieItem.id} className="movie-box">
                             <Link to={`/movie/${movieItem.id}`}>
                                 <img
                                     src={`https://image.tmdb.org/t/p/w200${movieItem.poster_path}`}
                                     alt={movieItem.title}
                                 />
                             </Link>
+                            <h3>{movieItem.title}</h3>
+                            <p>Release Date: {movieItem.release_date}</p>
+                            <p>MPAA Rating: {movieItem.mpaaRating}</p>
+                            <p>Runtime: {movieItem.runtime}</p> 
                         </li>
                     ))}
                 </ul>

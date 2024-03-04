@@ -38,7 +38,7 @@ body {
     font-size: 2rem;
     font-style: italic;
     flex: 1;
-    text-align: center; 
+    text-align: center;  
 }
 
 .nav {
@@ -105,7 +105,7 @@ input {
     margin-top: 4rem;
     background-color: white;
     border-radius: 6px;
-    color: #333333;
+    color: #333333; 
 }
 
 .checkbox-container {
@@ -138,33 +138,13 @@ input {
 .advanced-search-container {
     display: flex;
     flex-direction: row;
-    gap: 3rem;
-}
-
-.release-year {
-    position: absolute; 
-    margin-top: 19rem; 
-    font-size: larger;  
-}
-
-.runtime-min {
-    position: absolute;
-    margin-top: 8rem;
-    font-size: larger;
-    padding-left: 3rem;
-}
-
-.runtime-max {
-    position: absolute;
-    margin-top: 12rem;
-    font-size: larger;
-    padding-left: 3rem;
-}
+    gap: 3rem;  
+} 
 
 .advanced-search-display {
-    padding-bottom: 3rem;
-    padding-left: 32rem;
-
+    position: absolute;
+    padding-bottom: 3rem; 
+    margin-left: 75rem;
 }
 
 .button-container{
@@ -268,37 +248,88 @@ p {
 .movie-info {
     text-align: left;
     margin-left: 1rem;
+    margin-top:1rem;
 }
 
 .movie-poster{
     float: left;
+    margin-top: 5.5rem; 
 }
 
 .movie-genre{
-    text-align: center;
+    text-align: left; 
+    padding-left: 33rem;
+    margin-bottom: 2rem;
+
 }
 
 .movie-summary{
-    font-size: 1.7rem;
+    font-size: 2rem; 
     margin-bottom: 1.5rem;
-    max-width: 900px;
-    margin-left: 40rem;
+    max-width: 1100px; 
+    text-align: left;
 }
 
 .movie-directors{
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    text-align: center;
+    text-align: left;
 }
 
 .movie-writers {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    text-align: center;
+    text-align: left;
+    padding-left: 13.7rem;
 }
 
 .movie-actors {
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
+    font-size: 1.8rem; 
+    text-align: left;
+    padding-left: 13.7rem;
+}
+
+.drop-down-container { 
+    max-height: 200px;
+    max-width: 330px; 
+    padding: 1rem;
+    margin-top: 4rem;
+    background-color: white;
+    border-radius: 6px;
+    color: #333333;   
 } 
+
+.runtime-min { 
+    font-size: larger;  
+}
+
+.runtime-max {
+    margin-top: 2rem;
+    font-size: larger; 
+}
+
+.release-year {
+    font-size: larger;
+    margin-top: 2rem; 
+}
+
+.new-releases-text{
+    border-bottom: 1px solid #e5e5e5;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.popular-movies-text {
+    border-bottom: 1px solid #e5e5e5;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.movie-box {
+    border: 1px solid rgba(255,255,255,.3);
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0px 6px 15px #45022d;
+    background-color: rgba(255,255,255,.3);
+}

@@ -63,17 +63,17 @@ function SearchResults() {
             <h2>Search Results for "{searchTerm}"</h2>
             <ul>
                 {movies.map((movie) => (
-                    <li key={movie.id}>
-                        <h3>{movie.title}</h3>
-                        <p>Release Date: {movie.release_date}</p>
-                        <p>MPAA Rating: {movie.mpaaRating}</p>
-                        <p>Runtime: {movie.runtime}</p>
+                    <li key={movie.id} className="movie-box">
                         <Link to={`/movie/${movie.id}`}>
                             <img
                                 src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                                 alt={movie.title}
                             />
                         </Link>
+                        <h3>{movie.title}</h3>
+                        <p>Release Date: {movie.release_date}</p>
+                        <p>MPAA Rating: {movie.mpaaRating}</p>
+                        <p>Runtime: {movie.runtime}</p>   
                     </li>
                 ))}
             </ul>

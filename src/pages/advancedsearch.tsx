@@ -249,17 +249,17 @@ function AdvancedSearch() {
                         <option value="2hr">2hr</option>
                         <option value="2hr 30min">2hr 30min</option>
                         <option value="3hr+">3hr+</option>
-                    </select>
-                    </div> 
+                    </select> 
+                </div> 
              
 
 
-            <div>
+              <div>
                 <div> 
-                    <div className="release-year">
+                  <div className="release-year">
                     <label htmlFor="ReleaseYear">Select Year:</label>
                      
-                        <select id="ReleaseYear" value={releaseYear} onChange={(e) => handleChange(e.target.value, 5)}>
+                    <select id="ReleaseYear" value={releaseYear} onChange={(e) => handleChange(e.target.value, 5)}>
                         <option value=""> Select Release Year</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
@@ -387,8 +387,10 @@ function AdvancedSearch() {
                         <option value="1901">1901</option>
                         <option value="1900">1900</option>
                     </select>
-                        </div> 
-                    </div>
+                  </div> 
+                </div>
+              </div>
+             </div>
                     <div className="advanced-search-display">
                         {isFilterApplied && (
                             <>
@@ -396,7 +398,7 @@ function AdvancedSearch() {
                                 <div className="movie-list">
                                     {filteredMovies !== null && filteredMovies.length > 0 ? (
                                         filteredMovies.map((movie) => (
-                                            <div key={`${movie.id}-${movie.title}`} className="movie-item">
+                                            <div key={`${movie.id}-${movie.title}`} className="movie-box">
                                                 <Link to={`/movie/${movie.id}`}>
                                                     <img
                                                         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
@@ -414,9 +416,9 @@ function AdvancedSearch() {
                         )}
                     </div>
 
-                </div>
+                
 
-            </div>
+             
         </div>
     );
 }
